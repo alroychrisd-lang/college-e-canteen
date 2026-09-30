@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>College E-Canteen</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial, sans-serif;
+
+    background:
+    linear-gradient(rgba(20,10,0,.45),rgba(20,10,0,.65)),
+    url("https://images.unsplash.com/photo-1504674900247-0877df9cc836")
+    center/cover fixed;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+}
+
+.container{
+    width:92%;
+    max-width:700px;
+    text-align:center;
+
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(10px);
+
+    padding:45px 25px;
+    border-radius:30px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.5);
+
+    border:2px solid rgba(255,255,255,.2);
+}
+
+.food-icon{
+    font-size:70px;
+    margin-bottom:15px;
+}
+
+h1{
+    font-size:42px;
+    margin-bottom:15px;
+    text-shadow:0 4px 15px black;
+}
+
+.subtitle{
+    font-size:20px;
+    margin-bottom:35px;
+}
+
+.order-btn{
+    display:inline-block;
+
+    padding:16px 40px;
+
+    background:#ff7b00;
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:40px;
+
+    font-size:20px;
+    font-weight:bold;
+
+    box-shadow:0 8px 25px rgba(255,123,0,.45);
+
+    transition:.3s;
+}
+
+.order-btn:hover{
+    transform:scale(1.08);
+    background:#ff9800;
+}
+
+.powered{
+    margin-top:35px;
+    font-size:14px;
+    opacity:.8;
+}
+
+@media(max-width:600px){
+
+    h1{
+        font-size:30px;
+    }
+
+    .subtitle{
+        font-size:17px;
+    }
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="food-icon">
+        🍔 🍕 🍟
+    </div>
+
+    <h1>
+        WELCOME TO<br>
+        COLLEGE E-CANTEEN
+    </h1>
+
+    <p class="subtitle">
+        Fresh Food • Easy Ordering • Faster Service
+    </p>
+
+    <a href="menu.html" class="order-btn">
+        ORDER NOW 🍽️
+    </a>
+
+    <div class="powered">
+        Powered by Namo Team
+    </div>
+
+</div>
+
+</body>
+</html>
