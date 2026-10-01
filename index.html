@@ -7,132 +7,688 @@
 <title>College E-Canteen</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-body{
-    min-height:100vh;
-    font-family:Arial, sans-serif;
-
-    background:
-    linear-gradient(rgba(20,10,0,.45),rgba(20,10,0,.65)),
-    url("https://images.unsplash.com/photo-1504674900247-0877df9cc836")
-    center/cover fixed;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff8ef;
+    color: #3b2416;
 }
 
-.container{
-    width:92%;
-    max-width:700px;
-    text-align:center;
-
-    background:rgba(0,0,0,.55);
-    backdrop-filter:blur(10px);
-
-    padding:45px 25px;
-    border-radius:30px;
-
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.5);
-
-    border:2px solid rgba(255,255,255,.2);
+header {
+    background: linear-gradient(135deg, #ff7a00, #ffb300);
+    color: white;
+    padding: 22px;
+    text-align: center;
 }
 
-.food-icon{
-    font-size:70px;
-    margin-bottom:15px;
+header h1 {
+    margin: 0;
+    font-size: 28px;
 }
 
-h1{
-    font-size:42px;
-    margin-bottom:15px;
-    text-shadow:0 4px 15px black;
+header p {
+    margin: 6px 0 0;
 }
 
-.subtitle{
-    font-size:20px;
-    margin-bottom:35px;
+.page {
+    display: none;
+    padding: 25px 18px;
+    max-width: 700px;
+    margin: auto;
 }
 
-.order-btn{
-    display:inline-block;
-
-    padding:16px 40px;
-
-    background:#ff7b00;
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:40px;
-
-    font-size:20px;
-    font-weight:bold;
-
-    box-shadow:0 8px 25px rgba(255,123,0,.45);
-
-    transition:.3s;
+.page.active {
+    display: block;
 }
 
-.order-btn:hover{
-    transform:scale(1.08);
-    background:#ff9800;
+.card {
+    background: white;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 18px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.10);
 }
 
-.powered{
-    margin-top:35px;
-    font-size:14px;
-    opacity:.8;
+input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ffd08a;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-top: 8px;
 }
 
-@media(max-width:600px){
+button {
+    border: none;
+    padding: 13px 18px;
+    border-radius: 10px;
+    background: #ff7a00;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-    h1{
-        font-size:30px;
-    }
+button:active {
+    transform: scale(0.97);
+}
 
-    .subtitle{
-        font-size:17px;
-    }
+.primary {
+    width: 100%;
+    margin-top: 15px;
+}
 
+.food {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.food h3 {
+    margin: 0 0 6px;
+}
+
+.price {
+    font-weight: bold;
+    color: #e85d00;
+}
+
+.cart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.qty button {
+    padding: 7px 12px;
+    margin: 0 3px;
+}
+
+.total {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 18px;
+}
+
+.status {
+    padding: 15px;
+    border-radius: 12px;
+    background: #fff1d6;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.success {
+    background: #e8f8e8;
+    color: #176b17;
+}
+
+.error {
+    background: #ffe5e5;
+    color: #a40000;
+}
+
+.small {
+    font-size: 13px;
+    color: #777;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
+<header>
+    <h1>🍴 College E-Canteen</h1>
+    <p>Order your food easily</p>
+</header>
 
-    <div class="food-icon">
-        🍔 🍕 🍟
+<!-- PAGE 1 -->
+<section id="page1" class="page active">
+
+    <div class="card">
+        <h2>👨‍🎓 Student Login</h2>
+
+        <label>Enter Student Number</label>
+
+        <input
+            id="studentNo"
+            type="text"
+            placeholder="Example: 24BCA001"
+        >
+
+        <button class="primary" onclick="startOrdering()">
+            ORDER NOW 🍔
+        </button>
     </div>
 
-    <h1>
-        WELCOME TO<br>
-        COLLEGE E-CANTEEN
-    </h1>
+</section>
 
-    <p class="subtitle">
-        Fresh Food • Easy Ordering • Faster Service
-    </p>
 
-    <a href="menu.html" class="order-btn">
-        ORDER NOW 🍽️
-    </a>
+<!-- PAGE 2 -->
+<section id="page2" class="page">
 
-    <div class="powered">
-        Powered by Namo Team
+    <div class="card">
+        <h2>🍽️ Food Menu</h2>
+
+        <p class="small">
+            Student: <b id="displayStudent"></b>
+        </p>
+
+        <div id="menu">
+            Loading menu...
+        </div>
+
     </div>
 
-</div>
+    <button class="primary" onclick="showCart()">
+        VIEW CART 🛒
+    </button>
+
+</section>
+
+
+<!-- PAGE 3 -->
+<section id="page3" class="page">
+
+    <div class="card">
+
+        <h2>🛒 Your Cart</h2>
+
+        <div id="cart"></div>
+
+        <div class="total">
+            Total: ₹<span id="total">0</span>
+        </div>
+
+        <button class="primary" onclick="placeOrder()">
+            PLACE ORDER
+        </button>
+
+        <button
+            class="primary"
+            style="background:#777"
+            onclick="showPage('page2')"
+        >
+            ← BACK TO MENU
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- PAGE 4 -->
+<section id="page4" class="page">
+
+    <div class="card">
+
+        <h2>📋 Order Created</h2>
+
+        <div id="orderResult"></div>
+
+    </div>
+
+</section>
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+
+<script>
+
+// ================================
+// FIREBASE CONFIGURATION
+// ================================
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCnb_zZoRpzvUUKpvTdiXDshwhRWDS56Ao",
+    authDomain: "college-e-canteen-bda44.firebaseapp.com",
+    projectId: "college-e-canteen-bda44",
+    storageBucket: "college-e-canteen-bda44.firebasestorage.app",
+    messagingSenderId: "124475585735",
+    appId: "1:124475585735:web:f4be826d2c4b5c1cce3ae2",
+    measurementId: "G-JKXT84RPY0"
+};
+
+
+// Start Firebase
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+
+// ================================
+// APP VARIABLES
+// ================================
+
+let studentNumber = "";
+
+let menuItems = [];
+
+let cart = {};
+
+
+// ================================
+// PAGE NAVIGATION
+// ================================
+
+function showPage(pageId) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+}
+
+
+// ================================
+// STUDENT NUMBER
+// ================================
+
+function startOrdering() {
+
+    const input = document.getElementById("studentNo").value.trim();
+
+    if (!input) {
+        alert("Please enter your student number.");
+        return;
+    }
+
+    studentNumber = input;
+
+    document.getElementById("displayStudent").textContent =
+        studentNumber;
+
+    showPage("page2");
+
+    loadMenu();
+}
+
+
+// ================================
+// LOAD MENU FROM FIRESTORE
+// ================================
+
+function loadMenu() {
+
+    const menuDiv = document.getElementById("menu");
+
+    menuDiv.innerHTML = "Loading food menu...";
+
+    db.collection("menu")
+        .get()
+        .then(snapshot => {
+
+            menuItems = [];
+
+            snapshot.forEach(doc => {
+
+                const item = doc.data();
+
+                menuItems.push({
+                    id: doc.id,
+                    name: item.name,
+                    price: Number(item.price),
+                    available: item.available
+                });
+
+            });
+
+            displayMenu();
+
+        })
+        .catch(error => {
+
+            console.error(error);
+
+            menuDiv.innerHTML = `
+                <div class="status error">
+                    Could not load menu.
+                    <br><br>
+                    ${error.message}
+                </div>
+            `;
+
+        });
+}
+
+
+// ================================
+// DISPLAY MENU
+// ================================
+
+function displayMenu() {
+
+    const menuDiv = document.getElementById("menu");
+
+    menuDiv.innerHTML = "";
+
+    if (menuItems.length === 0) {
+
+        menuDiv.innerHTML =
+            "<p>No food items available.</p>";
+
+        return;
+    }
+
+
+    menuItems.forEach(item => {
+
+        const div = document.createElement("div");
+
+        div.className = "card food";
+
+        if (item.available === false) {
+
+            div.innerHTML = `
+                <div>
+                    <h3>${item.name}</h3>
+                    <span class="price">
+                        ₹${item.price}
+                    </span>
+                </div>
+
+                <button disabled>
+                    SOLD OUT
+                </button>
+            `;
+
+        } else {
+
+            div.innerHTML = `
+                <div>
+                    <h3>${item.name}</h3>
+                    <span class="price">
+                        ₹${item.price}
+                    </span>
+                </div>
+
+                <button onclick="addToCart('${item.id}')">
+                    + ADD
+                </button>
+            `;
+
+        }
+
+        menuDiv.appendChild(div);
+
+    });
+}
+
+
+// ================================
+// ADD TO CART
+// ================================
+
+function addToCart(id) {
+
+    if (!cart[id]) {
+        cart[id] = 0;
+    }
+
+    cart[id]++;
+
+    alert("Added to cart! 🛒");
+
+}
+
+
+// ================================
+// SHOW CART
+// ================================
+
+function showCart() {
+
+    const cartDiv = document.getElementById("cart");
+
+    cartDiv.innerHTML = "";
+
+    let total = 0;
+
+    let hasItems = false;
+
+
+    menuItems.forEach(item => {
+
+        const quantity = cart[item.id] || 0;
+
+        if (quantity > 0) {
+
+            hasItems = true;
+
+            const itemTotal =
+                item.price * quantity;
+
+            total += itemTotal;
+
+
+            const row =
+                document.createElement("div");
+
+            row.className = "cart-row";
+
+            row.innerHTML = `
+                <div>
+                    <b>${item.name}</b>
+                    <br>
+                    ₹${item.price} × ${quantity}
+                </div>
+
+                <div class="qty">
+
+                    <button onclick="decrease('${item.id}')">
+                        −
+                    </button>
+
+                    <button onclick="increase('${item.id}')">
+                        +
+                    </button>
+
+                </div>
+            `;
+
+            cartDiv.appendChild(row);
+
+        }
+
+    });
+
+
+    if (!hasItems) {
+
+        cartDiv.innerHTML =
+            "<p>Your cart is empty.</p>";
+
+    }
+
+
+    document.getElementById("total").textContent =
+        total;
+
+
+    showPage("page3");
+}
+
+
+// ================================
+// INCREASE
+// ================================
+
+function increase(id) {
+
+    cart[id]++;
+
+    showCart();
+
+}
+
+
+// ================================
+// DECREASE
+// ================================
+
+function decrease(id) {
+
+    cart[id]--;
+
+    if (cart[id] <= 0) {
+        delete cart[id];
+    }
+
+    showCart();
+
+}
+
+
+// ================================
+// PLACE ORDER
+// ================================
+
+function placeOrder() {
+
+    let items = [];
+
+    let total = 0;
+
+
+    menuItems.forEach(item => {
+
+        const quantity = cart[item.id] || 0;
+
+        if (quantity > 0) {
+
+            items.push({
+
+                name: item.name,
+
+                price: item.price,
+
+                quantity: quantity
+
+            });
+
+            total +=
+                item.price * quantity;
+
+        }
+
+    });
+
+
+    if (items.length === 0) {
+
+        alert("Your cart is empty.");
+
+        return;
+    }
+
+
+    const orderData = {
+
+        studentNo: studentNumber,
+
+        items: items,
+
+        total: total,
+
+        status: "Pending",
+
+        paymentStatus: "Pending",
+
+        createdAt:
+            firebase.firestore.FieldValue.serverTimestamp()
+
+    };
+
+
+    db.collection("Orders")
+        .add(orderData)
+
+        .then(docRef => {
+
+            document.getElementById("orderResult").innerHTML = `
+
+                <div class="status success">
+
+                    ✅ ORDER SAVED
+
+                </div>
+
+                <br>
+
+                <b>Order ID:</b>
+
+                <p>${docRef.id}</p>
+
+                <b>Student Number:</b>
+
+                <p>${studentNumber}</p>
+
+                <b>Total:</b>
+
+                <p>₹${total}</p>
+
+                <div class="status">
+
+                    💳 Payment Status:
+                    <br>
+                    PENDING
+
+                </div>
+
+                <p class="small">
+
+                    Your order has been sent to the
+                    canteen database.
+
+                </p>
+
+            `;
+
+
+            cart = {};
+
+            showPage("page4");
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            document.getElementById("orderResult").innerHTML = `
+
+                <div class="status error">
+
+                    ❌ Order could not be saved.
+
+                    <br><br>
+
+                    ${error.message}
+
+                </div>
+
+            `;
+
+            showPage("page4");
+
+        });
+
+}
+
+</script>
 
 </body>
 </html>
