@@ -77,6 +77,11 @@ button:active {
     transform: scale(0.97);
 }
 
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
 .primary {
     width: 100%;
     margin-top: 15px;
@@ -151,10 +156,13 @@ button:active {
     <p>Order your food easily</p>
 </header>
 
-<!-- PAGE 1 -->
+
+<!-- ================= PAGE 1 ================= -->
+
 <section id="page1" class="page active">
 
     <div class="card">
+
         <h2>👨‍🎓 Student Login</h2>
 
         <label>Enter Student Number</label>
@@ -168,15 +176,18 @@ button:active {
         <button class="primary" onclick="startOrdering()">
             ORDER NOW 🍔
         </button>
+
     </div>
 
 </section>
 
 
-<!-- PAGE 2 -->
+<!-- ================= PAGE 2 ================= -->
+
 <section id="page2" class="page">
 
     <div class="card">
+
         <h2>🍽️ Food Menu</h2>
 
         <p class="small">
@@ -196,7 +207,8 @@ button:active {
 </section>
 
 
-<!-- PAGE 3 -->
+<!-- ================= PAGE 3 ================= -->
+
 <section id="page3" class="page">
 
     <div class="card">
@@ -226,7 +238,8 @@ button:active {
 </section>
 
 
-<!-- PAGE 4 -->
+<!-- ================= PAGE 4 ================= -->
+
 <section id="page4" class="page">
 
     <div class="card">
@@ -240,37 +253,55 @@ button:active {
 </section>
 
 
-<!-- Firebase -->
+<!-- ================= FIREBASE ================= -->
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 
 <script>
 
-// ================================
+// ==================================================
 // FIREBASE CONFIGURATION
-// ================================
+// ==================================================
 
 const firebaseConfig = {
+
     apiKey: "AIzaSyCnb_zZoRpzvUUKpvTdiXDshwhRWDS56Ao",
-    authDomain: "college-e-canteen-bda44.firebaseapp.com",
-    projectId: "college-e-canteen-bda44",
-    storageBucket: "college-e-canteen-bda44.firebasestorage.app",
-    messagingSenderId: "124475585735",
-    appId: "1:124475585735:web:f4be826d2c4b5c1cce3ae2",
-    measurementId: "G-JKXT84RPY0"
+
+    authDomain:
+        "college-e-canteen-bda44.firebaseapp.com",
+
+    projectId:
+        "college-e-canteen-bda44",
+
+    storageBucket:
+        "college-e-canteen-bda44.firebasestorage.app",
+
+    messagingSenderId:
+        "124475585735",
+
+    appId:
+        "1:124475585735:web:f4be826d2c4b5c1cce3ae2",
+
+    measurementId:
+        "G-JKXT84RPY0"
 };
 
 
-// Start Firebase
+// ==================================================
+// START FIREBASE
+// ==================================================
+
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
 
-// ================================
+// ==================================================
 // APP VARIABLES
-// ================================
+// ==================================================
 
 let studentNumber = "";
 
@@ -279,106 +310,200 @@ let menuItems = [];
 let cart = {};
 
 
-// ================================
+// ==================================================
 // PAGE NAVIGATION
-// ================================
+// ==================================================
 
 function showPage(pageId) {
 
     document.querySelectorAll(".page").forEach(page => {
+
         page.classList.remove("active");
+
     });
 
     document.getElementById(pageId).classList.add("active");
 }
 
 
-// ================================
+// ==================================================
 // STUDENT NUMBER
-// ================================
+// ==================================================
 
 function startOrdering() {
 
-    const input = document.getElementById("studentNo").value.trim();
+    const input =
+        document.getElementById("studentNo").value.trim();
+
 
     if (!input) {
+
         alert("Please enter your student number.");
+
         return;
     }
 
+
     studentNumber = input;
+
 
     document.getElementById("displayStudent").textContent =
         studentNumber;
 
+
     showPage("page2");
+
 
     loadMenu();
 }
 
 
-// ================================
+// ==================================================
 // LOAD MENU FROM FIRESTORE
-// ================================
+// ==================================================
 
 function loadMenu() {
 
-    const menuDiv = document.getElementById("menu");
+    const menuDiv =
+        document.getElementById("menu");
 
-    menuDiv.innerHTML = "Loading food menu...";
+
+    menuDiv.innerHTML =
+        "Loading food menu...";
+
 
     db.collection("menu")
+
         .get()
+
         .then(snapshot => {
+
 
             menuItems = [];
 
+
             snapshot.forEach(doc => {
+
 
                 const item = doc.data();
 
+
+                // ------------------------------------------
+                // SAFELY READ PRICE
+                // ------------------------------------------
+
+                const priceValue =
+                    item.price ?? item.Price;
+
+
+                const convertedPrice =
+                    Number(priceValue);
+
+
+                // ------------------------------------------
+                // SAFELY READ NAME
+                // ------------------------------------------
+
+                const itemName =
+                    item.name ??
+                    item.Name ??
+                    "Food Item";
+
+
+                // ------------------------------------------
+                // SAFELY READ AVAILABILITY
+                // ------------------------------------------
+
+                const itemAvailable =
+                    item.available ??
+                    item.Available ??
+                    true;
+
+
+                // ------------------------------------------
+                // CHECK PRICE
+                // ------------------------------------------
+
+                if (!Number.isFinite(convertedPrice)) {
+
+                    console.error(
+                        "Invalid price for:",
+                        doc.id,
+                        item
+                    );
+
+                    return;
+                }
+
+
                 menuItems.push({
+
                     id: doc.id,
-                    name: item.name,
-                    price: Number(item.price),
-                    available: item.available
+
+                    name: itemName,
+
+                    price: convertedPrice,
+
+                    available: itemAvailable
+
                 });
 
             });
 
+
             displayMenu();
 
         })
+
+
         .catch(error => {
+
 
             console.error(error);
 
+
             menuDiv.innerHTML = `
+
                 <div class="status error">
-                    Could not load menu.
+
+                    ❌ Could not load menu.
+
                     <br><br>
+
                     ${error.message}
+
                 </div>
+
             `;
 
         });
 }
 
 
-// ================================
+// ==================================================
 // DISPLAY MENU
-// ================================
+// ==================================================
 
 function displayMenu() {
 
-    const menuDiv = document.getElementById("menu");
+    const menuDiv =
+        document.getElementById("menu");
+
 
     menuDiv.innerHTML = "";
 
+
     if (menuItems.length === 0) {
 
-        menuDiv.innerHTML =
-            "<p>No food items available.</p>";
+        menuDiv.innerHTML = `
+
+            <div class="status error">
+
+                No valid food items found.
+
+            </div>
+
+        `;
 
         return;
     }
@@ -386,41 +511,78 @@ function displayMenu() {
 
     menuItems.forEach(item => {
 
-        const div = document.createElement("div");
 
-        div.className = "card food";
+        const div =
+            document.createElement("div");
+
+
+        div.className =
+            "card food";
+
+
+        // ------------------------------------------
+        // SOLD OUT
+        // ------------------------------------------
 
         if (item.available === false) {
 
+
             div.innerHTML = `
+
                 <div>
-                    <h3>${item.name}</h3>
+
+                    <h3>
+                        ${item.name}
+                    </h3>
+
                     <span class="price">
                         ₹${item.price}
                     </span>
+
                 </div>
+
 
                 <button disabled>
                     SOLD OUT
                 </button>
-            `;
 
-        } else {
-
-            div.innerHTML = `
-                <div>
-                    <h3>${item.name}</h3>
-                    <span class="price">
-                        ₹${item.price}
-                    </span>
-                </div>
-
-                <button onclick="addToCart('${item.id}')">
-                    + ADD
-                </button>
             `;
 
         }
+
+
+        // ------------------------------------------
+        // AVAILABLE
+        // ------------------------------------------
+
+        else {
+
+
+            div.innerHTML = `
+
+                <div>
+
+                    <h3>
+                        ${item.name}
+                    </h3>
+
+                    <span class="price">
+                        ₹${item.price}
+                    </span>
+
+                </div>
+
+
+                <button
+                    onclick="addToCart('${item.id}')"
+                >
+                    + ADD
+                </button>
+
+            `;
+
+        }
+
 
         menuDiv.appendChild(div);
 
@@ -428,32 +590,41 @@ function displayMenu() {
 }
 
 
-// ================================
+// ==================================================
 // ADD TO CART
-// ================================
+// ==================================================
 
 function addToCart(id) {
 
+
     if (!cart[id]) {
+
         cart[id] = 0;
+
     }
 
+
     cart[id]++;
+
 
     alert("Added to cart! 🛒");
 
 }
 
 
-// ================================
+// ==================================================
 // SHOW CART
-// ================================
+// ==================================================
 
 function showCart() {
 
-    const cartDiv = document.getElementById("cart");
+
+    const cartDiv =
+        document.getElementById("cart");
+
 
     cartDiv.innerHTML = "";
+
 
     let total = 0;
 
@@ -462,14 +633,28 @@ function showCart() {
 
     menuItems.forEach(item => {
 
-        const quantity = cart[item.id] || 0;
+
+        const quantity =
+            cart[item.id] || 0;
+
 
         if (quantity > 0) {
 
+
             hasItems = true;
 
+
+            // ------------------------------------------
+            // SAFETY CHECK FOR PRICE
+            // ------------------------------------------
+
+            const itemPrice =
+                Number(item.price) || 0;
+
+
             const itemTotal =
-                item.price * quantity;
+                itemPrice * quantity;
+
 
             total += itemTotal;
 
@@ -477,27 +662,47 @@ function showCart() {
             const row =
                 document.createElement("div");
 
-            row.className = "cart-row";
+
+            row.className =
+                "cart-row";
+
 
             row.innerHTML = `
+
                 <div>
-                    <b>${item.name}</b>
+
+                    <b>
+                        ${item.name}
+                    </b>
+
                     <br>
-                    ₹${item.price} × ${quantity}
+
+                    ₹${itemPrice} × ${quantity}
+
                 </div>
+
 
                 <div class="qty">
 
-                    <button onclick="decrease('${item.id}')">
+
+                    <button
+                        onclick="decrease('${item.id}')"
+                    >
                         −
                     </button>
 
-                    <button onclick="increase('${item.id}')">
+
+                    <button
+                        onclick="increase('${item.id}')"
+                    >
                         +
                     </button>
 
+
                 </div>
+
             `;
+
 
             cartDiv.appendChild(row);
 
@@ -507,6 +712,7 @@ function showCart() {
 
 
     if (!hasItems) {
+
 
         cartDiv.innerHTML =
             "<p>Your cart is empty.</p>";
@@ -522,41 +728,62 @@ function showCart() {
 }
 
 
-// ================================
-// INCREASE
-// ================================
+// ==================================================
+// INCREASE QUANTITY
+// ==================================================
 
 function increase(id) {
 
+
+    if (!cart[id]) {
+
+        cart[id] = 0;
+
+    }
+
+
     cart[id]++;
+
 
     showCart();
 
 }
 
 
-// ================================
-// DECREASE
-// ================================
+// ==================================================
+// DECREASE QUANTITY
+// ==================================================
 
 function decrease(id) {
 
+
+    if (!cart[id]) {
+
+        return;
+    }
+
+
     cart[id]--;
 
+
     if (cart[id] <= 0) {
+
         delete cart[id];
+
     }
+
 
     showCart();
 
 }
 
 
-// ================================
+// ==================================================
 // PLACE ORDER
-// ================================
+// ==================================================
 
 function placeOrder() {
+
 
     let items = [];
 
@@ -565,60 +792,106 @@ function placeOrder() {
 
     menuItems.forEach(item => {
 
-        const quantity = cart[item.id] || 0;
+
+        const quantity =
+            cart[item.id] || 0;
+
 
         if (quantity > 0) {
 
+
+            const itemPrice =
+                Number(item.price) || 0;
+
+
             items.push({
 
-                name: item.name,
+                name:
+                    item.name,
 
-                price: item.price,
+                price:
+                    itemPrice,
 
-                quantity: quantity
+                quantity:
+                    quantity
 
             });
 
+
             total +=
-                item.price * quantity;
+                itemPrice * quantity;
 
         }
 
     });
 
 
+    // ------------------------------------------
+    // EMPTY CART CHECK
+    // ------------------------------------------
+
     if (items.length === 0) {
 
-        alert("Your cart is empty.");
+
+        alert(
+            "Your cart is empty."
+        );
+
 
         return;
+
     }
 
 
+    // ------------------------------------------
+    // ORDER DATA
+    // ------------------------------------------
+
     const orderData = {
 
-        studentNo: studentNumber,
 
-        items: items,
+        studentNo:
+            studentNumber,
 
-        total: total,
 
-        status: "Pending",
+        items:
+            items,
 
-        paymentStatus: "Pending",
+
+        total:
+            total,
+
+
+        status:
+            "Pending",
+
+
+        paymentStatus:
+            "Pending",
+
 
         createdAt:
-            firebase.firestore.FieldValue.serverTimestamp()
+            firebase.firestore.FieldValue
+                .serverTimestamp()
 
     };
 
 
+    // ------------------------------------------
+    // SAVE ORDER
+    // ------------------------------------------
+
     db.collection("Orders")
+
         .add(orderData)
 
         .then(docRef => {
 
-            document.getElementById("orderResult").innerHTML = `
+
+            document.getElementById(
+                "orderResult"
+            ).innerHTML = `
+
 
                 <div class="status success">
 
@@ -626,32 +899,55 @@ function placeOrder() {
 
                 </div>
 
+
                 <br>
 
-                <b>Order ID:</b>
 
-                <p>${docRef.id}</p>
+                <b>
+                    Order ID:
+                </b>
 
-                <b>Student Number:</b>
 
-                <p>${studentNumber}</p>
+                <p>
+                    ${docRef.id}
+                </p>
 
-                <b>Total:</b>
 
-                <p>₹${total}</p>
+                <b>
+                    Student Number:
+                </b>
+
+
+                <p>
+                    ${studentNumber}
+                </p>
+
+
+                <b>
+                    Total:
+                </b>
+
+
+                <p>
+                    ₹${total}
+                </p>
+
 
                 <div class="status">
 
                     💳 Payment Status:
+
                     <br>
+
                     PENDING
 
                 </div>
 
+
                 <p class="small">
 
-                    Your order has been sent to the
-                    canteen database.
+                    Your order has been sent
+                    to the canteen database.
 
                 </p>
 
@@ -660,15 +956,22 @@ function placeOrder() {
 
             cart = {};
 
+
             showPage("page4");
 
         })
 
+
         .catch(error => {
+
 
             console.error(error);
 
-            document.getElementById("orderResult").innerHTML = `
+
+            document.getElementById(
+                "orderResult"
+            ).innerHTML = `
+
 
                 <div class="status error">
 
@@ -681,6 +984,7 @@ function placeOrder() {
                 </div>
 
             `;
+
 
             showPage("page4");
 
